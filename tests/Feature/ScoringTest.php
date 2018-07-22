@@ -44,21 +44,17 @@ class ScoringTest extends TestCase
     public function scores_should_be_numeric()
     {
         Passport::actingAs(factory(User::class)->create());
-
         $team1 = factory(Team::class)->create();
         $team2 = factory(Team::class)->create();
-
         $match = factory(Match::class)->create([
             "team_1" => $team1->id,
             "team_2" => $team2->id,
             "stage" => "round16",
         ]);
-
         $scores = [
             "score_1" => "not-a-score",
             "score_2" => "not-a-score",
         ];
-
         $response = $this->putJson('api/matches/' . $match->id . '/scores', $scores);
         $response->assertStatus(422);
         $response->assertJsonValidationErrors("score_1");
@@ -78,12 +74,10 @@ class ScoringTest extends TestCase
             "team_2" => $team2->id,
             "stage" => "round16",
         ]);
-
         $scores = [
             "score_1" => 1,
             "score_2" => 0,
         ];
-
         $response = $this->putJson('api/matches/' . $match->id . '/scores', $scores);
         $response->assertStatus(204);
         $this->assertEquals(1, $match->fresh()->winner);
